@@ -77,6 +77,20 @@ SELECT
 
 select * from Customers
 
+
+
+select * from Customers;
+-- mostrar los paises en donde se tienen los clientes
+
+select distinct Country as 'Pais'  from Customers -- distinct para quitar datos repetidos de un campo
+order by Country
+
+
+
+-- operadores relacionales
+-- TES DE COMPARACION
+
+
 -- Seleccionar el cliente
 
 select CustomerID AS 'Nombre', 
@@ -129,3 +143,55 @@ FROM
     Orders
 WHERE 
     YEAR(OrderDate) = 1996; -- El año no necesita estar entre comillas
+
+
+	-- Mostrar todas las oedenes de compra selecionar 
+
+	select Quantity
+	from [Order Details] where Quantity >= 40;
+
+	-- Mostrar el nombre completo del empeado , numero de empleado , 
+	-- fecha de nacimiento , cyti y fecha de contratacion 
+	-- deve ser mavor de 1993 los resutados en sus encabesados deven ser mostrados en español
+
+	select 
+	EmployeeID AS 'Numero de Empleado',
+	(FirstName + ' ' + LastName) as 'Nombre Completo' ,
+	
+	BirthDate AS 'Fecha Nacimiento',
+	City AS 'Ciudad',
+	HireDate AS 'Fecha contratacion'
+
+
+	from Employees 
+	where year (HireDate) > 1993
+	
+	
+	-------------------------
+	
+	select 
+	EmployeeID AS 'Numero de Empleado',
+	Concat (FirstName ,' ',LastName, '-', Title) as 'Nombre Completo' ,-- forma de acomodar dos datos en uno con:  Concat
+	
+	BirthDate AS 'Fecha Nacimiento',
+	City AS 'Ciudad',
+	HireDate AS 'Fecha contratacion'
+
+
+	from Employees 
+	where year (HireDate) > 1993
+
+
+	-- Mostrar los empleados
+	 -- que no son ditigidos por el jefe 2
+	 select ReportsTo ,
+	 LastName
+
+	 from Employees
+	 
+	 where ReportsTo <> 2;
+
+	 --- selecionar los empleados que no tienen jefe 
+	 -- selecionar los datos que son nulos
+	 select * from Employees
+	 where ReportsTo is null
