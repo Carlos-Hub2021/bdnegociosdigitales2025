@@ -195,3 +195,229 @@ WHERE
 	 -- selecionar los datos que son nulos
 	 select * from Employees
 	 where ReportsTo is null
+
+
+--------------------------------------------------------------
+--Operadores Loguicas  
+	-- or
+	-- and 
+	-- not
+
+--      Seleccionar los productos que tengan un precio de entre 10 y 50
+select 
+ProductID as 'id producto',
+UnitPrice as 'precio' ,
+UnitsInStock,				-- esto es para chegar los datos que estan en un rango
+ProductName as 'Nombre'						-- como en esta consuta, que es de 10 a 50
+from Products
+where UnitPrice >= 10 and UnitPrice <= 50  
+
+
+-----------------------------------------------------------------------------
+
+-- Mostrar todos los pedidos por clientes que no son de alemania 
+
+select * from Orders
+where not ShipCountry<> 'Germany'
+
+
+
+-- selecionar clintes de mexio o estados unidos
+
+select * from Customers
+where Country ='USA' or Country ='Mexico'
+
+-- Selecionar empleados que naciero 1955 y 1958
+-- yb que bivan en lonbres
+
+select * from Employees
+
+where (year (BirthDate) >= 1955 or year (BirthDate ) <=1958)and  City = 'london' 
+
+
+-- selecionar los pedidos con flete de mayor a 100
+-- y enviados a francia o españa
+
+select * from Orders
+where Freight> 100 and (ShipCountry = 'spain' or ShipCountry ='france')
+
+-- seleccionar las primers 5 ( top 5 ) ordenes de comras 
+select top 5 * from Orders
+
+-- Seleccionar Productos con precio entre 10 y 20
+-- que no esten decontinuadas y tengan mas de 20 en stok
+
+select 
+	ProductName,
+	UnitPrice,
+	UnitsInStock,
+	Discontinued
+
+
+from Products
+where UnitPrice >= 10 and UnitPrice <= 50 
+		and Discontinued = 0 
+		and UnitsInStock >20 
+
+-- pedidos enviados a francia o alemania
+select 
+	OrderID,
+	ShipCountry,
+	Freight
+
+from Orders
+where (ShipCountry = 'france' or ShipCountry = 'germany')
+	and Freight <50
+
+	-- cientes que no sean de mexico o usa y que tenfan 
+	--fax
+
+	select CompanyName , 
+	Country, 
+	city , 
+	fax 
+	from Customers
+	where not ( Country ='Mexico' or Country = 'USA')
+	and fax is not null
+
+
+	--------------------------------------------------------------------------------
+
+	-- Clausula IN (or)
+
+	--------------------------------------------------------------------------------
+
+	-- seleccionar los productos con cotegoria 1, 3 o 5
+select 
+ProductName,
+CategoryID,
+UnitPrice
+from Products
+where CategoryID = 1 or CategoryID = 3 or CategoryID = 5
+
+	-- seleccionar los productos con cotegoria 1, 3 o 5 con IN
+select 
+ProductName,
+CategoryID,
+UnitPrice
+from Products
+where CategoryID in (1,3,5)
+
+
+-- Selecionar todas las ordenes de RJ, tachira y las que no tengan 
+
+select * from Orders
+where ShipRegion IN ('RJ', 'Táchira') or ShipRegion is null
+
+-- relecionar las oedenes que tengan cantidales de 12, 9, 40
+-- y descuento de 0.15 y o.02 
+
+select * from [Order Details]
+where Quantity IN (12, 9,40) and Discount in(0.15, 0.05)
+
+-- Clausula Betwen
+
+-- Clausula Betwenn 
+-- between valor inicial and 
+-- Mostrar los productos con precio entre 10 y 50
+
+select * from Products;
+select ProductName, UnitPrice from Products
+where UnitPrice >= 10 and UnitPrice <= 50
+;
+
+select ProductName as NombrePorudcto, UnitPrice as PrecioProducto from Products
+where UnitPrice between 10 and 50;
+
+-- Seleccionar todos los pedidos realizados desde el primer de enero y 30 de junio de 1997
+
+select * from Orders;
+select OrderID, OrderDate from Orders
+where (year(OrderDate) = 1997) and OrderDate between 1997-01-01 and 1997-06-30;
+
+
+
+	select * from Orders
+	where OrderDate >= '1997-01-01' and OrderDate<= '1997-06-30'
+
+	-- 
+
+
+	-- selecionar los productos de Freight as 'Pero' de 50 a 200,
+	-- y que sean de paises de Germany y France
+
+	select 
+	OrderID as [Numero de orden],
+	OrderDate as [Fecha de orden],
+	RequiredDate [Fecha de Entrega],
+	Freight as 'Pero',
+	ShipCountry as [Pais de Entreja]
+	
+	from Orders
+	where Freight between 50 and 200
+	and ShipCountry in ( 'Germany',  'France')
+
+	-- selecionar todos los productos que tengan un presio 5 y 20 dolares
+	-- O que sean de la categoria 1,2,3
+	
+	select * from Products
+	where UnitPrice between 5 and 20
+	or CategoryID in ('1','2','3')
+	
+	
+	
+	-- espleados con numero de trabajador 3 a 7 que no tabajan en londes y seattle
+	
+	select * from Employees
+	where EmployeeID between 3 and 7
+	and not City in ('london', 'seattle') 
+
+	
+	--------------------------------------------------------------------------------
+
+	-- Clausula like (Patrones)
+	-- 1)	 %		->  Este representa 0 o mas carateres en el paton de busqueda 
+
+	-- 2)	 _		-> Representa exactamente un carater en el patron de busqueda
+	
+	-- 3)	[]		-> Seutiliza para definir un congunto de carateres , 
+	--					buscando cualquiera de ellos en la pacision espesifica
+
+	-- 4)	[]		-> Se utilisa para  buscar carateres que no estan dentro
+	--				   del conjunto especifico
+	--------------------------------------------------------------------------------
+
+
+
+	-- buscar los productos que comienzan con  ( Cha )
+
+	select * from Products
+	where ProductName like 'C%'
+	
+	--------
+
+	select * from Products
+	where ProductName like 'Ch%'
+
+	--------
+
+	select * from Products
+	where ProductName like 'Cha%'
+	 
+
+	 -- buscar los productos que comienzan con  ( Cha ) 
+	 -- y que su ( UnitPrice ) se a de 18
+
+	 select * from Products
+	where ProductName like 'Cha%'
+	and UnitPrice =18
+
+--	Buscar todos tos productos que termines con ( e )
+
+	 select * from Products
+	where ProductName like '%e'
+
+--	Seleccionar todos los clintes de la empresa que contiene la palabra ( co )
+
+	select * from Customers
+	where CompanyName like '%co%'
