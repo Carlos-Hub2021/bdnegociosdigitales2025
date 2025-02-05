@@ -421,3 +421,87 @@ where (year(OrderDate) = 1997) and OrderDate between 1997-01-01 and 1997-06-30;
 
 	select * from Customers
 	where CompanyName like '%co%'
+
+	------------------------------------
+
+--	selecinar los productos que comiensen con A o B
+
+	select * from Products
+	where ProductName like '[AB]%'
+
+
+	select * from Products
+	where ProductName like '[A-M]%'
+
+	-- selecionar todos los productos que no comiensen A o B
+	select * from Products
+	where ProductName like '[^AB]%'
+
+	-- Selecionar todos lso procuctos donde el nombre 
+	-- Que comiense con A pero no contega la E
+
+	select * from Products
+	where ProductName like 'a[^B]%'
+
+	-- CAUSULA ORDER by
+
+	select 
+	ProductID,
+	ProductName,
+	UnitPrice,
+	UnitsInStock
+	from Products
+
+	order by UnitPrice		 -- acendente 
+						desc -- decendente
+
+	select 
+	ProductID,
+	ProductName,
+	UnitPrice,
+	UnitsInStock
+	from Products
+
+	order by 3 -- es para selecionar la casilla vis
+
+	-- selecionar los clientes ordenados por el pais y dentro por ciudad
+
+	select 
+	CustomerID,
+	Country,
+	City 
+	from Customers
+	order by Country, City asc
+
+
+
+	---------------
+
+	
+	select 
+	CustomerID,
+	Country,
+	City 
+	from Customers
+	where Country in ('Brazil', 'Germany')
+	order by Country, City desc
+	-----
+	select 
+	CustomerID,
+	Country,
+	City,
+	Region
+	from Customers
+	where (Country = 'Brazil'or Country = 'Germany')
+	and Region in not null
+	order by Country, City desc
+
+
+
+
+
+
+
+
+
+
