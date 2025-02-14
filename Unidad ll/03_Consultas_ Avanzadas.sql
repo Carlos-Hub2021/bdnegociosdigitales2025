@@ -243,4 +243,108 @@ inner join [Order Details] as od
 on od.OrderID = o.OrderID
 group by e.FirstName, e.LastName
 
----
+---------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------
+--  14		obtener los pedidos agrupados por pais 
+
+	select 
+	o.ShipCountry as 'pasi de envio',
+	concat(o.ShipCity) as [nombre de orden]
+	
+	from Orders as o
+
+	group by ShipCountry
+
+
+
+---------------------------------------------------------------------------------------
+--  15		obtener los empleados y la cantidad de territorios en los que trabajan 
+
+
+select 
+concat (e.FirstName, '' ,e.LastName) as [Nombre],
+count (TerritoryID) as 'C territorios'
+from Employees as e
+inner join EmployeeTerritories as et
+on e.EmployeeID = et.EmployeeID
+group by e.FirstName, e.LastName
+
+
+
+select 
+concat (e.FirstName, '' ,e.LastName) as Nombre,
+count (TerritoryID) as 'C territorios'
+from Employees as e
+inner join EmployeeTerritories as et
+on e.EmployeeID = et.EmployeeID
+inner join Territories as t
+on et.TerritoryID = t.TerritoryID
+group by e.FirstName, e.LastName, 
+
+
+
+
+---------------------------------------------------------------------------------------
+--  16
+
+select 
+c.CategoryName ,
+
+from Categories as c
+inner join Products as p
+on c.CategoryID = p.CategoryID
+group by CategoryName
+
+
+
+-- 17 obtener la cantidad total  de productos bendidos por provedor
+select * from Products
+select * from Shippers
+
+
+ select 
+ CompanyName,
+ sum (od.Quantity) as [total de productos]
+ 
+ from Shippers as s
+ inner join Products as p
+ on s.ShipperID=  p.SupplierID
+ inner join [Order Details] as od 
+ on p.ProductID= od.ProductID
+
+ group by CompanyName
+ order by 2 desc
+-- 18 obtener la cantidad de pedidos envias por 
+-- empresa de trasporte 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
