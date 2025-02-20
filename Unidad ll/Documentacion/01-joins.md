@@ -1,5 +1,8 @@
 
-use TiendaVideoJuegos
+# inner join 
+![Inner join](../Img/image.jpeg)
+
+``` sql
 
 use Northwind
 
@@ -469,3 +472,5 @@ group by c.CompanyName
 	having sum (od.Quantity * od.UnitPrice) between 500 and 2000
 
 --	left join right join full join y cross join
+
+```
