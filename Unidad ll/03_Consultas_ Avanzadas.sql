@@ -469,3 +469,9 @@ group by c.CompanyName
 	having sum (od.Quantity * od.UnitPrice) between 500 and 2000
 
 --	left join right join full join y cross join
+
+
+
+
+
+select * from 
