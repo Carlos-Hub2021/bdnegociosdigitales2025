@@ -28,6 +28,9 @@ where CategoryName = 'Beverages'
 -- Crear una vista que permita visualizar solamente clientes de mexico y brazil
 go
 
+select * from vistaOedenesCompras
+
+
 create or alter view vistaClientesLatinos
 as
 select * from Customers

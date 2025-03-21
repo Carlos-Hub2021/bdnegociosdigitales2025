@@ -9,13 +9,13 @@ use Northwind
 
 -- crearte un stort para selecionar todos los crientes
 create or alter procedure spu_mostrar_clientes
-as
+AS
 begin
-select * from Customers
+   select * from Customers;
 end;
-go
+GO
 
--- ejecute un stor
+-- Ejecutar un store en transact
 exec spu_mostrar_clientes
 
 
@@ -23,16 +23,17 @@ exec spu_mostrar_clientes
 -- parametros de entrada
 
 create or alter proc spu_Customers_pais
--- Parametos
-@pais nvarchar (15)		-- parameto de entrada
-as 
+-- Parametros
+@pais nvarchar(15),
+@pais2 nvarchar(15)
+                     -- Parametro de entrada 
+AS
 begin
-	select * from Customers
-	where Country = @pais;
+
+    select * from customers
+	where country in (@pais, @pais2);
 end;
-
-exec spu_Customers_pais 'Germany'   
-
+-- Fin del store
 
 ---------------------------------------------------
 -- crear un sp
@@ -42,62 +43,56 @@ create or alter proc spu_Customers_pais
 -- Parametos
 @pais nvarchar (15),
 @pais2 nvarchar (15)-- parameto de entrada
-as 
+AS
 begin
-	select * from Customers
-	where Country in (@pais,@pais2);
+
+    select * from customers
+	where country in (@pais, @pais2);
 end;
 
----------------------------------------------------
-declare @p1 nvarchar (15) = 'spain';
 
-declare @p2 nvarchar (15) = 'Germany';
+-- Fin del store
+DEclare @p1 nvarchar(15) = 'mexico';
+DEclare @p2 nvarchar(15) = 'germany';
 
-exec spu_Customers_pais @p1, @p2;
+exec spu_customersporpais @p1, @p2;
 go
 
--- generer un reporte que permita visualizar los datos de compra de un determinado de clinte 
--- mostrando , el monto total de compras por producto mediante un sp
+-- Generar un reporte que permita visualizar los datos de compra de un
+-- determinado cliente, en un rango de fechas, mostrando, 
+-- el monto total de compras por producto, mediante un sp.
 
-select * from vistaOedenesCompras
-
-
-CREATE OR ALTER PROC spu_informe_ventas
-    @nombres NVARCHAR(40) = 'Berglunds snabbkop',
-    @fechaInicial DATETIME,
-    @fechaFinal DATETIME
-AS
-BEGIN
-    -- Verificar que las fechas no sean nulas
-    IF @fechaInicial IS NULL OR @fechaFinal IS NULL
-    BEGIN
-        PRINT 'Las fechas inicial y final no pueden ser nulas.'
-        RETURN
-    END
-
-    -- Verificar que la fecha inicial no sea mayor que la fecha final
-    IF @fechaInicial > @fechaFinal
-    BEGIN
-        PRINT 'La fecha inicial no puede ser mayor que la fecha final.'
-        RETURN
-    END
-
-    -- Consulta para obtener el informe de ventas
-    SELECT 
-        [Nombre de producto], 
-        [Nombre del clinte],
-        SUM(importe) AS [Monto Total]
-    FROM 
-        vistaOedenesCompras
-    WHERE 
-        [Nombre del clinte] = @nombres
-        AND [Fecha de requerimiento] BETWEEN @fechaInicial AND @fechaFinal
-    GROUP BY 
-        [Nombre de producto], [Nombre del clinte]
-    ORDER BY 
-        [Monto Total] DESC;
-END;
+use northwind;
 GO
+
+
+---------------------------------------------------
+
+
+reate or alter proc spu_informe_ventas_clientes
+-- Parametros
+@nombre nvarchar(40) = 'Berglunds snabbkï¿½p', -- Parametro de entrada con valor por default 
+@fechaInicial DateTime, 
+@fechaFinal Datetime
+AS
+
+begin
+
+select 
+[Nombre Producto],
+[Nombre del Cliente],  
+sum(importe) AS [Monto Total]
+
+from vistaordenescompra
+
+where [Nombre del Cliente] = @nombre 
+
+and [Fecha de Orden] between @fechaInicial and @fechaFinal
+group by
+ [Nombre Producto], [Nombre del Cliente]
+end;
+GO
+
 
 
 -- ejecutar de un estor con parametros de estrada
@@ -113,13 +108,15 @@ EXEC spu_informe_ventas @fechaFinal ='1997-01-01',
 -- ejecutor de un spu con parametros de estrada con un
 -- compo que tiene un valor por defaul
 
+exec spu_informe_ventas_clientes @fechaInicial ='1996-07-04', 
+                                 @FechaFinal='1997-01-01' 
 
 
 go
 -- store procedues con parametros de salida
 
 create or alter proc spu_obtener_numero_clientes
-@customerid nchar (5),
+@customerid nchar (5),-- Parametro de entrada
 @totalCustomers int output -- parametro de salida
 
 as 
@@ -162,12 +159,12 @@ go
 
 exec spu_comparar_calificacion @califi = -11
 
-
+go
 
 
 
 -- crear un sp para 
--- veric¿ficar si un cliente existe antes de debolver su informacion 
+-- vericï¿½ficar si un cliente existe antes de debolver su informacion 
 
 go
 create or alter proc spu_obtener_clinte_siexiste
@@ -187,97 +184,85 @@ select 1 from Customers where CustomerID = 'AROUT'
 exec spu_obtener_clinte_siexiste @numeroCliente= 'AROUT'
 
 --
---CREAR UN SP QUE PERMITA INSERTAR UN CLINTE PERO PRIMERO SE TIENE QUE VERIFICAR QUE NO EXISTA
-
-CREATE OR ALTER PROC spu_existenciaCliente
-@cliente nchar(5),
-@nombreCliente nvarchar(40),
-@nombreContacto nvarchar(30),
-@tituloContacto nvarchar(30),
-@direccion nvarchar(60),
-@ciudad nvarchar(30), -- Falta la ciudad en la tabla Customers
-@region nvarchar(15),
-@codigoPostal nvarchar(10), -- Corregido el nombre del parámetro
-@pais nvarchar(15),
-@telefono nvarchar(24),
-@faxCliente nvarchar(24)
-AS
-BEGIN
-
-    IF NOT EXISTS (SELECT 1 FROM Customers WHERE CustomerID = @cliente)
-    BEGIN
-        INSERT INTO Customers (CustomerID, CompanyName, ContactName, ContactTitle, [Address], City, Region, PostalCode, Country, Phone, Fax)
-        VALUES (@cliente, @nombreCliente, @nombreContacto, @tituloContacto, @direccion, @ciudad, @region, @codigoPostal, @pais, @telefono, @faxCliente);
-        PRINT 'Cliente insertado correctamente.';
-    END
-    ELSE 
-    BEGIN
-        PRINT 'El cliente ya existe.';
-    END
-END
-GO
 
 
-CREATE OR ALTER PROC spu_existenciaCliente_Try_Catch
-    @cliente nchar(5),
-    @nombreCliente nvarchar(40),
-    @nombreContacto nvarchar(30),
-    @tituloContacto nvarchar(30),
-    @direccion nvarchar(60),
-    @ciudad nvarchar(30), -- Falta la ciudad en la tabla Customers
-    @region nvarchar(15),
-    @codigoPostal nvarchar(10), -- Corregido el nombre del parámetro
-    @pais nvarchar(15),
-    @telefono nvarchar(24),
-    @faxCliente nvarchar(24)
-AS
-BEGIN
-    BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM Customers WHERE CustomerID = @cliente)
-        BEGIN
-            INSERT INTO Customers (CustomerID, CompanyName, ContactName, ContactTitle, [Address], City, Region, PostalCode, Country, Phone, Fax)
-            VALUES (@cliente, @nombreCliente, @nombreContacto, @tituloContacto, @direccion, @ciudad, @region, @codigoPostal, @pais, @telefono, @faxCliente);
-            PRINT 'Cliente insertado correctamente.';
-        END
-        ELSE 
-        BEGIN
-            PRINT 'El cliente ya existe.';
-        END
-    END TRY
-    BEGIN CATCH
-        -- Captura el error y muestra un mensaje
-        PRINT 'Error: ' + ERROR_MESSAGE();
-        PRINT 'Número de error: ' + CAST(ERROR_NUMBER() AS VARCHAR);
-        PRINT 'Estado de error: ' + CAST(ERROR_STATE() AS VARCHAR);
-        PRINT 'Procedimiento que causó el error: ' + ERROR_PROCEDURE();
-        PRINT 'Línea del error: ' + CAST(ERROR_LINE() AS VARCHAR);
-    END CATCH
-END
-GO
+
+
+-- Crear un store procedure que permita insertar un cliente, 
+-- pero se debe verificar primero que no exista
+
+
+
+create or alter procedure spu_agregar_cliente 
+
+   @id nchar(5), 
+   @nombre nvarchar(40), 
+   @city nvarchar(15) = 'San Miguel'
+as
+begin
+     if exists (select 1 from Customers where CustomerID = @id)
+	 begin
+	     print ('El cliente ya existe')
+	     return 1
+	 end
+
+	 insert into customers(customerid, companyname)
+	 values(@id, @nombre);
+	 print('Cliente insertado exitosamente');
+	 return 0;
+
+end;
+go
+
+
+exec spu_agregar_cliente 'AlFKI', 'Patito de Hule'
+exec spu_agregar_cliente 'AlFKC', 'Patito de Hule'
+go
+
+create or alter procedure spu_agregar_cliente_try_catch
+ @id nchar(5), 
+ @nombre nvarchar(40), 
+ @city nvarchar(15) = 'San Miguel'
+ AS
+ begin 
+	begin try
+	  insert into customers(customerid, companyname)
+	  values(@id, @nombre);
+	  print('Cliente insertado exitosamente');
+	end try
+	begin catch
+		  print ('El cliente ya existe')
+	end catch
+ end;
+ Go
+ exec spu_agregar_cliente 'AlFKD', 'Muï¿½eca Vieja'
+
+
+
 
 -- Manejo de ciclos en stores
---Imprimir el número de veces que indique el usuario
-CREATE OR ALTER PROCEDURE spu_Imprimir
-    @numero INT
-AS
-BEGIN
+--Imprimir el nï¿½mero de veces que indique el usuario
 
-    IF @numero <= 0
-    BEGIN
-        PRINT 'El número debe ser mayor que 0.';
-        RETURN; -- SALE DEL PROCEDIMIENTO SI EL RETURN NO ES VÁLIDO
-    END
+ create or alter procedure spu_imprimir
+ @numero int
+ AS
+ begin 
 
-    DECLARE @i INT = 1;
+    if @numero<=0
+	begin
+	  print('El numero no puede ser 0 o negativo')
+	  return
+    end 
 
-    WHILE @i <= @numero
-    BEGIN
-        PRINT @i; 
-        SET @i = @i + 1;
-    END
-END;
-GO
+	declare @i int
+	SET @i = 1
+	while(@i<=@numero)
+	begin 
+	  print concat('Numero ' , @i)
+	  set @i = @i + 1
+	end
 
-exec spu_Imprimir @numero = 10
-
+ end;
+ GO
+ exec spu_imprimir 0
 
