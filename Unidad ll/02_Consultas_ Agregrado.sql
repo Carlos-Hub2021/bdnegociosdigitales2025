@@ -26,13 +26,13 @@ from Orders
 -- 
 -- seleciona el presio mas bajo de los producos
  select 
- min(UnitPrice) -- es para buscar el presio mas pequeño
+ min(UnitPrice) -- es para buscar el presio mas pequeï¿½o
  from Products
 
 
  
   select 
- min(UnitPrice),		-- es para buscar el presio mas pequeño
+ min(UnitPrice),		-- es para buscar el presio mas pequeï¿½o
  max (UnitPrice),		-- busaca el precio mas grande
  avg (UnitsInStock),	-- la media
  sum (UnitPrice)		-- Es la suma de los datos 
@@ -187,12 +187,12 @@ from Orders
 
 
 	SELECT 
-    CategoryID,                    -- ID de la categoría
-    COUNT(ProductID) AS TotalProductos -- Número de productos en la categoría
+    CategoryID,                    -- ID de la categorï¿½a
+    COUNT(ProductID) AS TotalProductos -- Nï¿½mero de productos en la categorï¿½a
 	FROM Products
 	GROUP BY CategoryID
 	HAVING 
-    COUNT(ProductID) > 10; -- Solo categorías con más de 10 productos
+    COUNT(ProductID) > 10; -- Solo categorï¿½as con mï¿½s de 10 productos
 	
 	-- Listar las ordenes agrupadas por empleado pero que solo muestre aqueloos que hayan 
 	-- gestionado mas de 10 pedidos 
